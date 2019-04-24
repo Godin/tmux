@@ -1675,10 +1675,22 @@ window_copy_command(struct window_mode_entry *wme, struct client *c,
 	}
 
 	if (strncmp(command, "search-", 7) != 0 && data->searchmark != NULL) {
+                // WIP preserve highlighting
+                if ( // if not motion
+                  strcmp(command, "cursor-up") != 0
+                  && strcmp(command, "cursor-down") != 0
+                  && strcmp(command, "page-up") != 0
+                  && strcmp(command, "page-down") != 0
+                  && strcmp(command, "scroll-up") != 0
+                  && strcmp(command, "scroll-down") != 0
+                ) {
 		window_copy_clear_marks(wme);
+                data->searchx = data->searchy = -1;
+                } else if (data->searchthis != -1) {
+                data->searchthis = -1;
+                }
 		if (action == WINDOW_COPY_CMD_NOTHING)
 			action = WINDOW_COPY_CMD_REDRAW;
-		data->searchx = data->searchy = -1;
 	}
 	wme->prefix = 1;
 
